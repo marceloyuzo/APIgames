@@ -3,7 +3,7 @@ const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Configurar o middleware CORS
 app.use(cors());
@@ -24,10 +24,10 @@ app.get('/', async (req, res) => {
     const sortedGames = mappedGames.sort((a, b) => a.name.localeCompare(b.name));
 
     // Enviar a resposta como JSON com a lista ordenada
-    res.json({ sortedGames });
+    res.send({ sortedGames });
   } catch (error) {
     console.error('Erro ao obter lista de aplicativos da Steam:', error);
-    res.status(500).json({ error: 'Erro ao obter lista de aplicativos da Steam' });
+    res.status(500).send({ error: 'Erro ao obter lista de aplicativos da Steam' });
   }
 });
 
@@ -35,14 +35,14 @@ app.get('/game/:id', async (req, res) => {
   try {
     const gameId = req.params.id
     const response = await axios.get(`http://store.steampowered.com/api/appdetails?appids=${gameId}`)
-    res.json(response.data)
+    res.send(response.data)
   }
   catch (error) {
     console.log(error)
   }
 })
 
+const server = app.listen(port, () => {
+  console.log("Servidor rodando na porta 3000")
+})
 
-app.listen(port, () => {
-  console.log(`Servidor proxy rodando em http://localhost:${port}`);
-});
